@@ -1,5 +1,6 @@
 
 #Python
+from doctest import Example
 from importlib.resources import path
 from typing import Optional
 from enum import Enum
@@ -24,13 +25,24 @@ class HairColor(Enum):
 
 
 class Person(BaseModel):
-    first_name: str = Field(..., min_length=1, max_length=50)
-    last_name: str = Field(..., min_length=1, max_length=50)
-    age: int = Field(..., gt=0, le=115)
-    hair_color: Optional[HairColor] = Field(default=None)
-    is_married: Optional[bool] = Field(default=None)
+    first_name: str = Field(..., min_length=1, max_length=50, example="Miguel")
+    last_name: str = Field(..., min_length=1, max_length=50, example="Torres")
+    age: int = Field(..., gt=0, le=115, example=25)
+    hair_color: Optional[HairColor] = Field(default=None, example="black")
+    is_married: Optional[bool] = Field(default=None, example=False)
 
-class Location(BaseModel):
+        #class Config:
+        #    schema_extra = {
+        #        "example": {
+        #            "first_name": "Facundo",
+        #            "last_name": "Garcia Martoni",
+        #            "age": 21,
+        #            "hair_color": "blonde",
+        #            "is_married": False
+        #        }
+        #    }
+
+class Location(BaseModel):  
     city: str
     state: str
     country: str
@@ -67,9 +79,11 @@ def show_person(
 @app.put("/person/{person_id}")
 def update_person(
     person_id: int = Path(..., gt=0, title="Person ID", description="This is the person ID. It's required"),
+
     person: Person = Body(...),
-    location: Location = Body(...)
+    #location: Location = Body(...)
 ):
-    results = person.dict()
-    results.update(location.dict())
-    return results
+    #results = person.dict()
+    #results.update(location.dict())
+    #return results
+    return person
