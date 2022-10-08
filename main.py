@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 
 #FastAPI
 from fastapi import FastAPI, Query
-from fastapi import Body, Path
+from fastapi import Body, Path, status
 
 app = FastAPI()
 
@@ -54,17 +54,17 @@ class Location(BaseModel):
     state: str
     country: str
 
-@app.get("/")
+@app.get("/", status_code=status.HTTP_200_OK)
 def home():
     return {"Hello": "World"}
 
 #request and response body
-@app.post("/person/new", response_model=PersonOut)
+@app.post("/person/new", response_model=PersonOut, status_code=status.HTTP_201_CREATED)
 def create_person(person: Person = Body(...)):
     return person
 
 #Validaciones: Query parameters
-@app.get("/person/detail")
+@app.get("/person/detail", status_code=status.HTTP_200_OK)
 def show_person(
     name: Optional[str] = Query(None, min_length=1,max_length=50,title="Person Name",description="This is the person name. It's between 1 and 50 characters", example="Rocío"),
     age: int = Query(..., title="Person Age", description="This is the person age. It's required", example=25)
