@@ -30,6 +30,7 @@ class Person(BaseModel):
     age: int = Field(..., gt=0, le=115, example=25)
     hair_color: Optional[HairColor] = Field(default=None, example="black")
     is_married: Optional[bool] = Field(default=None, example=False)
+    password: str = Field(..., min_length=8)
 
         #class Config:
         #    schema_extra = {
@@ -42,6 +43,13 @@ class Person(BaseModel):
         #        }
         #    }
 
+class PersonOut(BaseModel):
+    first_name: str = Field(..., min_length=1, max_length=50, example="Miguel")
+    last_name: str = Field(..., min_length=1, max_length=50, example="Torres")
+    age: int = Field(..., gt=0, le=115, example=25)
+    hair_color: Optional[HairColor] = Field(default=None, example="black")
+    is_married: Optional[bool] = Field(default=None, example=False)
+
 class Location(BaseModel):  
     city: str
     state: str
@@ -52,13 +60,11 @@ def home():
     return {"Hello": "World"}
 
 #request and response body
-
-@app.post("/person/new")
+@app.post("/person/new", response_model=PersonOut)
 def create_person(person: Person = Body(...)):
     return person
 
 #Validaciones: Query parameters
-
 @app.get("/person/detail")
 def show_person(
     name: Optional[str] = Query(None, min_length=1,max_length=50,title="Person Name",description="This is the person name. It's between 1 and 50 characters", example="Rocío"),
@@ -67,7 +73,6 @@ def show_person(
     return {name: age}
 
 #Validaciones: path parameters
-
 @app.get("/person/detail/{person_id}")
 def show_person(
     person_id: int = Path(..., gt=0, title="Person ID", description="This is the person ID. It's required", example=123)
@@ -75,7 +80,6 @@ def show_person(
     return {person_id: "It exist"}
 
 #validaciones: Request body
-
 @app.put("/person/{person_id}")
 def update_person(
     person_id: int = Path(..., gt=0, title="Person ID", description="This is the person ID. It's required", example=123),
