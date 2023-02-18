@@ -61,7 +61,7 @@ def home():
     return {"Hello": "World"}
 
 #request and response body
-@app.post("/person/new", response_model=PersonOut, status_code=status.HTTP_201_CREATED, tags=["Persons"], summary="Create person in the app")
+@app.post("/person/new", response_model=PersonOut, status_code=status.HTTP_201_CREATED, tags=["People"], summary="Create person in the app")
 def create_person(person: Person = Body(...)):
     """
     Create Person
@@ -77,7 +77,7 @@ def create_person(person: Person = Body(...)):
     return person
 
 #Validaciones: Query parameters
-@app.get("/person/detail", status_code=status.HTTP_200_OK, tags=["Persons"], deprecated=True)
+@app.get("/person/detail", status_code=status.HTTP_200_OK, tags=["People"], deprecated=True)
 def show_person(
     name: Optional[str] = Query(None, min_length=1,max_length=50,title="Person Name",description="This is the person name. It's between 1 and 50 characters", example="Rocío"),
     age: int = Query(..., title="Person Age", description="This is the person age. It's required", example=25)
@@ -87,7 +87,7 @@ def show_person(
 persons = [1,2,3,4,5]
 
 #Validaciones: path parameters
-@app.get("/person/detail/{person_id}", tags=["Persons"])
+@app.get("/person/detail/{person_id}", tags=["People"])
 def show_person(
     person_id: int = Path(..., gt=0, title="Person ID", description="This is the person ID. It's required", example=123)
 ):
@@ -100,7 +100,7 @@ def show_person(
         return {person_id: "It exist"}
 
 #validaciones: Request body
-@app.put("/person/{person_id}", tags=["Persons"])
+@app.put("/person/{person_id}", tags=["People"])
 def update_person(
     person_id: int = Path(..., gt=0, title="Person ID", description="This is the person ID. It's required", example=123),
 
